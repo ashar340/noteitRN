@@ -8,7 +8,17 @@
 
 import React from 'react';
 import { withAuthenticator } from 'aws-amplify-react-native';
+import Amplify, { API, graphqlOperation } from 'aws-amplify';
+import awsconfig from './aws-exports';
+import { useQueryClient, QueryClient, QueryClientProvider } from 'react-query';
+Amplify.configure(awsconfig);
 
+const queryClient = new QueryClient();
+if (__DEV__) {
+  import('react-query-native-devtools').then(({ addPlugin }) => {
+    addPlugin({ queryClient });
+  });
+}
 import {
   SafeAreaView,
   ScrollView,
@@ -26,7 +36,7 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-import NoteFolder from './src/components/note-folder/NoteFolder';
+import NoteFolder from './components/note-folder/NoteFolder';
 
 const Section = ({ children, title }) => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -55,6 +65,8 @@ const Section = ({ children, title }) => {
 };
 
 const App = () => {
+  const queryClient = new QueryClient();
+
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
@@ -62,19 +74,21 @@ const App = () => {
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <NoteFolder />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <QueryClientProvider client={queryClient}>
+      <SafeAreaView style={backgroundStyle}>
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          style={backgroundStyle}>
+          <Header />
+          <View
+            style={{
+              backgroundColor: isDarkMode ? Colors.black : Colors.white,
+            }}>
+            <NoteFolder />
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </QueryClientProvider>
   );
 };
 

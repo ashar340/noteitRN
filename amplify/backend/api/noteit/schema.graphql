@@ -1,6 +1,13 @@
-type Note @model @auth(rules: [{allow: public}]) {
+type Folder @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  Notes: [Note] @connection(keyName: "byFolder", fields: ["id"])
+  name: String
+}
+
+type Note @model @auth(rules: [{allow: public}]) @key(name: "byFolder", fields: ["folderID"]) {
   id: ID!
   name: String
   content: String
+  folderID: ID
 }
  

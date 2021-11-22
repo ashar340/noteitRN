@@ -4,8 +4,9 @@ import { schema } from './schema';
 
 
 
-const { Note } = initSchema(schema);
+const { Folder, Note } = initSchema(schema);
 
 export {
+  Folder,
   Note
 };
